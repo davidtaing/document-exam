@@ -79,6 +79,18 @@ make "start database"  # Start existing container
 make "stop database"   # Stop container
 ```
 
+**Alternative Docker commands** (if not using Make):
+```bash
+# Initial setup
+docker run --name document-exam-db -e POSTGRES_USER=langchain -e POSTGRES_PASSWORD=langchain -e POSTGRES_DB=langchain -p 50003:5432 -d pgvector/pgvector:pg16
+
+# Start existing container
+docker start document-exam-db
+
+# Stop container
+docker stop document-exam-db
+```
+
 ### 3. Set Up Ollama Models
 
 Download the required AI models:
