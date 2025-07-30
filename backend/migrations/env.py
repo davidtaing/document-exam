@@ -108,7 +108,7 @@ def run_migrations_online():
             context.run_migrations()
 
 def include_object(object, name, type_, reflected, compare_to):
-    system_tables = ['langchain_pg_collection', 'langchain_pg_embedding']
+    system_tables = []
     return name not in system_tables
 
 if context.is_offline_mode():
