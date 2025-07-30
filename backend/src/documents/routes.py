@@ -62,7 +62,10 @@ def process_pdf_to_embeddings(file_path, collection_name, filename, file_size):
     """Process PDF and store embeddings in PGVector database"""
     try:
         # Initialize embeddings and vector store
-        embeddings = OllamaEmbeddings(model=Config.EMBEDDINGS_MODEL)
+        embeddings = OllamaEmbeddings(
+            model=Config.EMBEDDINGS_MODEL,
+            base_url=Config.OLLAMA_BASE_URL
+        )
         vector_store = PGVector(
             embeddings=embeddings,
             collection_name=collection_name,

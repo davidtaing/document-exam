@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database with pgvector extension
+  database:
+    image: pgvector/pgvector:pg16
+    container_name: document-exam-db
+    environment:
+      POSTGRES_USER: langchain
+      POSTGRES_PASSWORD: langchain
+      POSTGRES_DB: langchain
+    ports:
+      - "50003:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U langchain"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend Flask application
+  backend:
+    build: ./backend
+    container_name: document-exam-backend
+    ports:
+      - "50001:5000"
+    environment:
+      - FLASK_ENV=production
+      - DATABASE_URL=postgresql+psycopg://langchain:langchain@database:5432/langchain
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - ./backend/uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:50001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # Frontend React application
+  frontend:
+    build: ./frontend
+    container_name: document-exam-frontend
+    ports:
+      - "50002:5173"
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_URL=http://localhost:50001
+
+volumes:
+  postgres_data:

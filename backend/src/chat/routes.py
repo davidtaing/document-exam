@@ -10,7 +10,10 @@ from src.config import Config
 
 def get_retriever_for_collection(collection_name):
     """Get a retriever for a specific collection"""
-    embeddings = OllamaEmbeddings(model=Config.EMBEDDINGS_MODEL)
+    embeddings = OllamaEmbeddings(
+        model=Config.EMBEDDINGS_MODEL,
+        base_url=Config.OLLAMA_BASE_URL
+    )
     vector_store = PGVector(
         embeddings=embeddings,
         collection_name=collection_name,
@@ -64,6 +67,7 @@ def chat():
         llm = ChatOllama(
             model=Config.CHAT_MODEL,
             temperature=0.8,
+            base_url=Config.OLLAMA_BASE_URL
         )
         
         # Get retriever for the specified collection
