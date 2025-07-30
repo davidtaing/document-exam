@@ -81,13 +81,13 @@ make "stop database"   # Stop container
 
 ### 3. Set Up Ollama Models
 
-Install the required AI models:
+Download the required AI models:
 
 ```bash
-# Install embedding model
+# Download embedding model
 ollama pull nomic-embed-text
 
-# Install chat model
+# Download chat model  
 ollama pull llama3.2
 ```
 
@@ -254,8 +254,8 @@ VITE_BACKEND_URL=http://localhost:50001
    - Start database: `make start-database`
 
 2. **Ollama Models Not Found**
-   - Install models: `ollama pull nomic-embed-text` and `ollama pull llama3.2`
-   - Check Ollama is running: `ollama list`
+   - Download models: `ollama pull nomic-embed-text` and `ollama pull llama3.2`
+   - Check Ollama is running and models are available: `ollama list`
 
 3. **Port Already in Use**
    - Backend (50001): Check for existing Flask processes
