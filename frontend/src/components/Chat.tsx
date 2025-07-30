@@ -2,9 +2,16 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 interface Collection {
-  name: string
+  id: string
+  collection_name: string
   filename: string
-  page_count: number
+  created_at: string
+  embeddings: number
+  file_size: number | null
+  filepath: string | null
+  pages_processed: number
+  status: string
+  total_pages: number
 }
 
 interface ChatMessage {
@@ -25,14 +32,6 @@ export default function Chat() {
   useEffect(() => {
     fetchCollections()
   }, [])
-
-  useEffect(() => {
-    // Check for pre-selected collection from URL params
-    const collectionParam = searchParams.get('collection')
-    if (collectionParam) {
-      setSelectedCollection(decodeURIComponent(collectionParam))
-    }
-  }, [searchParams])
 
   const fetchCollections = async () => {
     try {
@@ -109,7 +108,7 @@ export default function Chat() {
         <h1 className="text-3xl font-bold text-gray-900">Chat</h1>
         <p className="mt-2 text-gray-600">
           {selectedCollection && searchParams.get('collection') 
-            ? `Chatting with: ${collections.find(c => c.name === selectedCollection)?.filename || selectedCollection}`
+            ? `Chatting with: ${collections.find(c => c.collection_name === selectedCollection)?.filename || selectedCollection}`
             : 'Chat with your documents'
           }
         </p>
@@ -128,8 +127,8 @@ export default function Chat() {
           >
             <option value="">Choose a document...</option>
             {collections.map((collection) => (
-              <option key={collection.name} value={collection.name}>
-                {collection.filename} ({collection.page_count} pages)
+              <option key={collection.collection_name} value={collection.collection_name}>
+                {collection.filename} ({collection.total_pages} pages)
               </option>
             ))}
           </select>
