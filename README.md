@@ -114,6 +114,13 @@ cd backend
 poetry install
 ```
 
+Setup the venv:
+```bash
+poetry env activate
+<copy and paste the output to run the activate script>
+```
+
+
 Set up the database tables:
 
 ```bash
@@ -130,11 +137,6 @@ cd frontend
 npm install
 ```
 
-Create environment file (already exists):
-```bash
-# frontend/.env
-VITE_BACKEND_URL=http://localhost:50001
-```
 
 ## Running the Application
 
@@ -143,7 +145,7 @@ VITE_BACKEND_URL=http://localhost:50001
 You can run both frontend and backend using the provided Makefile commands:
 
 ```bash
-# Terminal 1: Start backend
+# Terminal 1: Start backend (requires the venv to be active)
 make run-backend
 
 # Terminal 2: Start frontend  
@@ -281,7 +283,7 @@ VITE_BACKEND_URL=http://localhost:50001
 
 ### Development Tips
 
-- Use `poetry shell` to activate the Python virtual environment
+- Use `poetry run` to execute commands in the Python virtual environment
 - Backend API endpoints are prefixed with `/documents` and `/chat`
 - Frontend uses React Router for navigation
 - Database migrations are automatically applied on startup
