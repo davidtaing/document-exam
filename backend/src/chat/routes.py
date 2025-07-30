@@ -3,8 +3,6 @@ from langchain_ollama import ChatOllama
 from langchain_postgres import PGVector
 from langchain_ollama import OllamaEmbeddings
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnablePassthrough
-from langchain_core.output_parsers import StrOutputParser
 
 from src.chat import bp
 from src.config import Config
@@ -37,7 +35,7 @@ def get_retriever_for_collection(collection_name):
         print(f"Debug: Error checking collection: {debug_error}")
     
     # Use simple similarity search instead of score threshold
-    return vector_store.as_retriever(search_kwargs={"k": 5})
+    return vector_store.as_retriever()
 
 
 def format_docs(docs):
@@ -71,16 +69,10 @@ def chat():
         # Get retriever for the specified collection
         retriever = get_retriever_for_collection(collection_name)
         
-        # Debug: Test retrieval directly
-        print(f"Debug: Collection name: {collection_name}")
-        print(f"Debug: Question: {question}")
-        
         try:
             # Test retrieval
             retrieved_docs = retriever.invoke(question)
             print(f"Debug: Retrieved {len(retrieved_docs)} documents")
-            for i, doc in enumerate(retrieved_docs):
-                print(f"Debug: Doc {i+1} preview: {doc.page_content[:100]}...")
             
             context = format_docs(retrieved_docs)
             print(f"Debug: Context length: {len(context)}")
@@ -128,39 +120,4 @@ def chat():
         }), 500
 
 
-@bp.route('/collections', methods=['GET', 'OPTIONS'])
-def get_available_collections():
-    """Get list of available collections for chat"""
-    try:
-        from src.database import db
-        from src.documents.models import LangchainPgCollection, LangchainPgEmbedding
-        from sqlalchemy import func
-        
-        # Query collections and their embeddings using SQLAlchemy models
-        collections_data = db.session.query(
-            LangchainPgCollection.name,
-            func.count(LangchainPgEmbedding.id).label('page_count'),
-            func.max(LangchainPgEmbedding.cmetadata['filename'].astext).label('filename')
-        ).join(
-            LangchainPgEmbedding, 
-            LangchainPgCollection.uuid == LangchainPgEmbedding.collection_id
-        ).group_by(
-            LangchainPgCollection.name
-        ).all()
-        
-        collections = [
-            {
-                'name': collection_name,
-                'filename': filename or f"{collection_name}.pdf",
-                'page_count': page_count
-            }
-            for collection_name, page_count, filename in collections_data
-        ]
-        
-        return jsonify({'collections': collections}), 200
-        
-    except Exception as e:
-        return jsonify({
-            'error': f'Error fetching collections: {str(e)}'
-        }), 500
 
