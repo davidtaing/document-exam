@@ -10,7 +10,3 @@ def create_app():
         app.register_blueprint(documents_bp, url_prefix='/documents')
     
     return app
-
-if __name__ == '__main__':
-    app = create_app()
-    app.run(debug=True)
