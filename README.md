@@ -115,11 +115,8 @@ poetry install
 Set up the database tables:
 
 ```bash
-# Activate poetry shell
-poetry shell
-
 # Run database migrations
-flask db upgrade
+poetry run flask db upgrade
 ```
 
 ### 5. Frontend Setup
@@ -158,8 +155,7 @@ Alternatively, start each service manually:
 **Backend (Terminal 1):**
 ```bash
 cd backend
-poetry shell
-flask run -p 50001
+poetry run flask run -p 50001
 ```
 
 **Frontend (Terminal 2):**
@@ -187,16 +183,15 @@ npm run dev
 
 ```bash
 cd backend
-poetry shell
 
 # Run with debug mode
-flask run -p 50001 --debug
+poetry run flask run -p 50001 --debug
 
 # Create new migration
-flask db migrate -m "Description of changes"
+poetry run flask db migrate -m "Description of changes"
 
 # Apply migrations
-flask db upgrade
+poetry run flask db upgrade
 ```
 
 ### Frontend Development
@@ -271,7 +266,7 @@ VITE_BACKEND_URL=http://localhost:50001
 
 3. **Port Already in Use**
    - Backend (50001): Check for existing Flask processes
-   - Frontend (5173): Check for existing Vite processes
+   - Frontend (50002): Check for existing Vite processes
    - Database (50003): Check for existing Docker containers
 
 4. **Poetry Installation Issues**
