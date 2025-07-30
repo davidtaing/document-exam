@@ -112,7 +112,29 @@ export default function FileList({ documents, loading }: FileListProps) {
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(doc.status)}`}>
                       {getStatusText(doc.status)}
                     </span>
+                    {doc.collection_name && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        Collection: {doc.collection_name}
+                      </span>
+                    )}
                   </div>
+
+                  {doc.status === 'completed' && doc.total_pages && (
+                    <div className="mt-2">
+                      <div className="text-xs text-gray-600">
+                        <span>📄 {doc.total_pages} pages • </span>
+                        <span>🧠 {doc.embeddings || doc.pages_processed} embeddings</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {doc.status === 'error' && doc.error_message && (
+                    <div className="mt-2">
+                      <div className="text-xs text-red-600">
+                        Error: {doc.error_message}
+                      </div>
+                    </div>
+                  )}
 
                   {(doc.status === 'uploading' && doc.uploadProgress !== undefined) && (
                     <div className="mt-2">
@@ -125,6 +147,15 @@ export default function FileList({ documents, loading }: FileListProps) {
                           className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                           style={{ width: `${doc.uploadProgress}%` }}
                         />
+                      </div>
+                    </div>
+                  )}
+
+                  {doc.status === 'processing' && (
+                    <div className="mt-2">
+                      <div className="flex items-center text-xs text-yellow-600">
+                        <div className="animate-spin rounded-full h-3 w-3 border-b border-yellow-600 mr-2"></div>
+                        <span>Processing PDF and generating embeddings...</span>
                       </div>
                     </div>
                   )}

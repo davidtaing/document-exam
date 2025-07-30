@@ -11,7 +11,11 @@ export interface PDFDocument {
   createdAt: Date
   embeddings?: number
   pages?: number
+  total_pages?: number
+  pages_processed?: number
   file_size?: number
+  collection_name?: string
+  error_message?: string
 }
 
 export default function Dashboard() {
@@ -32,7 +36,12 @@ export default function Dashboard() {
         filename: doc.filename,
         status: doc.status,
         createdAt: new Date(doc.created_at),
-        file_size: doc.file_size
+        file_size: doc.file_size,
+        collection_name: doc.collection_name,
+        total_pages: doc.total_pages,
+        pages_processed: doc.pages_processed,
+        embeddings: doc.embeddings,
+        error_message: doc.error_message
       }))
       
       setDocuments(mappedDocs)
@@ -67,9 +76,14 @@ export default function Dashboard() {
       doc.id === id ? { 
         ...doc,
         id: backendDoc.id,
-        status: 'completed',
+        status: backendDoc.status,
         uploadProgress: 100,
-        file_size: backendDoc.file_size
+        file_size: backendDoc.file_size,
+        collection_name: backendDoc.collection_name,
+        total_pages: backendDoc.total_pages,
+        pages_processed: backendDoc.pages_processed,
+        embeddings: backendDoc.embeddings,
+        error_message: backendDoc.error_message
       } : doc
     ))
   }
