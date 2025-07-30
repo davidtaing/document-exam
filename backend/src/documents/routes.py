@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from flask import request, jsonify
 from werkzeug.utils import secure_filename
+from sqlalchemy import func
 
 from langchain_pymupdf4llm import PyMuPDF4LLMLoader
 from langchain_core.documents import Document
@@ -10,6 +11,8 @@ from langchain_ollama import OllamaEmbeddings
 
 from src.documents import bp
 from src.config import Config
+from src.database import db
+from .models import LangchainPgCollection, LangchainPgEmbedding
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -18,50 +21,39 @@ def allowed_file(filename):
 def get_collections_from_db():
     """Get all collections from PGVector database"""
     try:
-        embeddings = OllamaEmbeddings(model=Config.EMBEDDINGS_MODEL)
-        vector_store = PGVector(
-            embeddings=embeddings,
-            collection_name="temp",  # This won't be used for listing
-            connection=Config.DATABASE_URL,
-            use_jsonb=True,
-        )
+        # Query collections and their embeddings using SQLAlchemy models
+        collections_data = db.session.query(
+            LangchainPgCollection.name,
+            func.count(LangchainPgEmbedding.id).label('page_count'),
+            func.min(LangchainPgEmbedding.cmetadata['created_at'].astext).label('created_at'),
+            func.max(LangchainPgEmbedding.cmetadata['file_size'].astext).label('file_size'),
+            func.max(LangchainPgEmbedding.cmetadata['filename'].astext).label('filename')
+        ).join(
+            LangchainPgEmbedding, 
+            LangchainPgCollection.uuid == LangchainPgEmbedding.collection_id
+        ).group_by(
+            LangchainPgCollection.name
+        ).order_by(
+            func.min(LangchainPgEmbedding.cmetadata['created_at'].astext).desc()
+        ).all()
         
-        # Query the database directly to get collection information
-        with vector_store._make_session() as session:
-            # Get all distinct collection names and their metadata
-            query = """
-            SELECT 
-                collection_name,
-                COUNT(*) as page_count,
-                MIN(cmetadata->>'created_at') as created_at,
-                MAX(cmetadata->>'file_size') as file_size,
-                MAX(cmetadata->>'filename') as filename
-            FROM langchain_pg_embedding 
-            WHERE collection_name IS NOT NULL 
-            GROUP BY collection_name
-            ORDER BY MIN(cmetadata->>'created_at') DESC
-            """
-            
-            result = session.execute(query)
-            documents = []
-            
-            for row in result:
-                collection_name, page_count, created_at, file_size, filename = row
-                documents.append({
-                    'id': collection_name,
-                    'collection_name': collection_name,
-                    'filename': filename or f"{collection_name}.pdf",
-                    'status': 'completed',
-                    'total_pages': page_count,
-                    'pages_processed': page_count,
-                    'embeddings': page_count,
-                    'created_at': created_at or datetime.now().isoformat(),
-                    'file_size': int(file_size) if file_size else None,
-                    'filepath': None  # Files are deleted after processing
-                })
-            
-            return documents
-            
+        documents = []
+        for collection_name, page_count, created_at, file_size, filename in collections_data:
+            documents.append({
+                'id': collection_name,
+                'collection_name': collection_name,
+                'filename': filename or f"{collection_name}.pdf",
+                'status': 'completed',
+                'total_pages': page_count,
+                'pages_processed': page_count,
+                'embeddings': page_count,
+                'created_at': created_at or datetime.now().isoformat(),
+                'file_size': int(file_size) if file_size else None,
+                'filepath': None  # Files are deleted after processing
+            })
+        
+        return documents
+        
     except Exception as e:
         print(f"Error fetching collections: {e}")
         return []
