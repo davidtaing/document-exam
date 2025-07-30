@@ -9,3 +9,6 @@ class Config:
     
     # Embeddings configuration
     EMBEDDINGS_MODEL = "nomic-embed-text"
+    
+    # Chat model configuration
+    CHAT_MODEL = "llama3.2"

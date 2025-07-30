@@ -17,7 +17,7 @@ export default function Dashboard() {
 
   const loadStats = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/documents/list`)
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/documents/list`)
       const data = await response.json()
       
       const totalDocuments = data.documents.length

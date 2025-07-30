@@ -1,4 +1,6 @@
-import type { PDFDocument } from './Dashboard'
+import { useNavigate } from 'react-router-dom'
+import { MessageCircle } from 'lucide-react'
+import type { PDFDocument } from './Documents'
 
 interface FileListProps {
   documents: PDFDocument[]
@@ -6,6 +8,7 @@ interface FileListProps {
 }
 
 export default function FileList({ documents, loading }: FileListProps) {
+  const navigate = useNavigate()
   const getStatusColor = (status: PDFDocument['status']) => {
     switch (status) {
       case 'uploading':
@@ -51,6 +54,12 @@ export default function FileList({ documents, loading }: FileListProps) {
     const sizes = ['Bytes', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(1024))
     return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i]
+  }
+
+  const handleChatClick = (document: PDFDocument) => {
+    if (document.status === 'completed' && document.collection_name) {
+      navigate(`/chat?collection=${encodeURIComponent(document.collection_name)}`)
+    }
   }
 
   if (loading) {
@@ -162,6 +171,18 @@ export default function FileList({ documents, loading }: FileListProps) {
                 </div>
               </div>
 
+              {/* Chat Button */}
+              {doc.status === 'completed' && doc.collection_name && (
+                <div className="flex-shrink-0 ml-4">
+                  <button
+                    onClick={() => handleChatClick(doc)}
+                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                  >
+                    <MessageCircle className="h-4 w-4 mr-1" />
+                    Chat
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         ))}

@@ -58,7 +58,7 @@ export default function FileUpload({
         onUploadError(id, 'Network error')
       })
 
-      xhr.open('POST', `${import.meta.env.VITE_BACKEND_URL}/documents/upload`)
+      xhr.open('POST', `${import.meta.env.VITE_BACKEND_URL}/api/documents/upload`)
       xhr.send(formData)
     } catch (error) {
       onUploadError(id, 'Upload failed')

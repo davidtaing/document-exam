@@ -28,7 +28,7 @@ export default function Documents() {
 
   const loadDocuments = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/documents/list`)
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/documents/list`)
       const data = await response.json()
       
       const mappedDocs = data.documents.map((doc: any) => ({
