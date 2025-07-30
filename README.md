@@ -170,8 +170,8 @@ npm run dev
 
 ### Access the Application
 
-- **Frontend**: http://localhost:5173 (Vite dev server)
 - **Backend API**: http://localhost:50001
+- **Frontend**: http://localhost:50002 (Vite dev server)
 - **Database**: PostgreSQL on localhost:50003
 
 ## Usage
