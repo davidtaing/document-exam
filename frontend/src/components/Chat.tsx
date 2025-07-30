@@ -33,6 +33,13 @@ export default function Chat() {
     fetchCollections()
   }, [])
 
+  useEffect(() => {
+    const collectionParam = searchParams.get('collection')
+    if (collectionParam) {
+      setSelectedCollection(collectionParam)
+    }
+  }, [searchParams])
+
   const fetchCollections = async () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/documents/list`)
