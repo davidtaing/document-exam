@@ -36,8 +36,6 @@ Before setting up the project, ensure you have the following installed:
 5. **Ollama** (for AI models)
    - Download from [ollama.ai](https://ollama.ai/)
    - Verify installation: `ollama --version`
-   - Download the `nomic-embed-text` model via `ollama pull nomic-embed-text`
-   - Download the `llama3.2` model via ollama pull llama3.2
 
 6. **Make** (for running Makefile commands)
    - **Linux/macOS**: Usually pre-installed
