@@ -138,9 +138,40 @@ npm install
 
 ## Running the Application
 
-### Start All Services
+### Quick Start (Just Want to Run the Project)
 
-You can run both frontend and backend using the provided Makefile commands:
+If you just want to run the project without making any changes, use Docker Compose. This approach only requires Docker and Ollama with the required models:
+
+**Prerequisites:**
+- Docker and Docker Compose
+- Ollama with models: `ollama pull nomic-embed-text` and `ollama pull llama3.2`
+
+**Run the application:**
+```bash
+# Run all services (frontend, backend, database)
+make run-docker
+
+# Or run in background/detached mode
+make run-docker-detached
+
+# View logs
+make logs-docker
+
+# Stop services
+make stop-docker
+
+# Remove services
+make remove-docker
+```
+
+**Access the application:**
+- **Frontend**: http://localhost:50002
+- **Backend API**: http://localhost:50001
+- **Database**: PostgreSQL on localhost:50003 (database: langchain, username: langchain, password: langchain)
+
+### Local Development Setup
+
+For development work, you can run both frontend and backend using the provided Makefile commands:
 
 ```bash
 # Terminal 1: Start backend (requires the venv to be active)
