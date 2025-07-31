@@ -188,20 +188,26 @@ Alternatively, start each service manually:
 **Backend (Terminal 1):**
 ```bash
 cd backend
-poetry run flask run -p 50001
+poetry run flask run  # Runs on default port 5000
 ```
 
 **Frontend (Terminal 2):**
 ```bash
 cd frontend
-npm run dev
+npm run dev  # Runs on default port 5173
 ```
 
 ### Access the Application
 
+**When running with Docker:**
+- **Frontend**: http://localhost:50002
 - **Backend API**: http://localhost:50001
-- **Frontend**: http://localhost:50002 (Vite dev server)
-- **Database**: PostgreSQL on localhost:50003
+- **Database**: PostgreSQL on localhost:50003 (database: langchain, username: langchain, password: langchain)
+
+**When running locally:**
+- **Frontend**: http://localhost:5173 (Vite dev server)
+- **Backend API**: http://localhost:5000 (Flask default)
+- **Database**: PostgreSQL on localhost:50003 (database: langchain, username: langchain, password: langchain)
 
 ## Usage
 
